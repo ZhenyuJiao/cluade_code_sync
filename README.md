@@ -1,36 +1,61 @@
-# 🦐 Claude Code 同步项目
+# AI 赚钱案例库
 
-这个项目用于在多台电脑间同步 Claude Code 的配置、记忆、skills 和 AI 赚钱案例网站。
+普通人用 AI 赚钱的真实案例和详细教程。React 前端 + Node.js 后端 + MongoDB。
 
 ## 目录结构
 
 ```
 cluade_code_sync/
-├── .claude/               # Claude Code 配置
-│   ├── settings.json      # 项目设置
-│   ├── memory/            # 记忆文件（记住你的偏好）
-│   └── skills/            # 已安装的技能
-├── website/               # AI 赚钱案例网站
-│   ├── index.html         # 主页面
-│   ├── cases.json         # 案例数据（加案例改这个文件）
-│   └── css/style.css      # 样式
-├── 新电脑设置指南.md       # 新电脑配置教程
-└── README.md              # 本文件
+├── .claude/             # Claude Code 配置、skills、记忆
+├── client/              # React 前端 (Vite)
+│   └── src/
+│       ├── api/         # API 接口
+│       ├── components/  # 通用组件
+│       ├── context/     # React Context
+│       ├── hooks/       # 自定义 Hooks
+│       └── pages/       # 页面
+├── server/              # Node.js 后端
+│   ├── config/          # 数据库配置
+│   ├── middleware/       # JWT 认证中间件
+│   ├── models/          # Mongoose 模型
+│   └── routes/          # API 路由
+├── website/             # 静态版网站（双击可直接打开）
+└── docs/
 ```
 
-## 使用方式
+## 本地开发
 
 ```bash
-# 克隆到新电脑
-git clone https://github.com/ZhenyuJiao/cluade_code_sync.git
-cd cluade_code_sync
+# 后端启动
+cd server
+npm install
+cp .env.example .env   # 配置 MongoDB 连接
+node seed.js            # 初始化数据（管理员 + 案例）
+npm run dev
 
-# 启动 Claude Code（自动加载项目配置）
-claude
+# 前端启动（新开一个终端）
+cd client
+npm install
+npm run dev
 ```
 
-## 网站
+## 管理员
 
-`website/index.html` 是一个 AI 赚钱案例展示网站，数据从 `cases.json` 动态加载。
+- 默认账号：`admin@example.com`
+- 默认密码：`admin123`
+- 登录地址：http://localhost:5173/admin/login
 
-在浏览器中直接打开即可浏览，无需服务器。
+## 技术栈
+
+| 层 | 选型 |
+|---|---|
+| 前端 | React 18 + Vite + React Router |
+| 后端 | Node.js + Express |
+| 数据库 | MongoDB |
+| 认证 | JWT + bcrypt |
+
+## 部署
+
+- 前端 → Vercel
+- 后端 → Railway
+- 数据库 → MongoDB Atlas
