@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { getCases } from '../api';
 
-const CASES_DATA = [
+const EMBEDDED_CASES = [
   {
     "id": 1,
     "title": "用 AI 写小红书文案接单，一单50-200元",
@@ -19,10 +20,8 @@ const CASES_DATA = [
   {
     "id": 2,
     "title": "AI 生成头像/壁纸挂闲鱼卖，一单净赚15元",
-    "category": "设计",
-    "difficulty": "入门",
-    "timeCost": "每天1小时",
-    "income": "1000-3000元/月",
+    "category": "设计", "difficulty": "入门",
+    "timeCost": "每天1小时", "income": "1000-3000元/月",
     "problem": "很多人想要好看的微信头像、手机壁纸，但不会自己做。找人设计太贵，网上找的又容易撞款。",
     "solution": "用 AI 绘画工具批量生成各种风格的壁纸和头像，挂到闲鱼上。客户下单后根据要求定制，5分钟出一张。",
     "result": "一张卖5-20元，每天接10-20单，周末更多。节日主题（圣诞/春节）能爆单，一天赚500+。",
@@ -34,10 +33,8 @@ const CASES_DATA = [
   {
     "id": 3,
     "title": "用 AI 写短视频脚本，一条50-200元",
-    "category": "视频",
-    "difficulty": "进阶",
-    "timeCost": "每天1-2小时",
-    "income": "2000-5000元/月",
+    "category": "视频", "difficulty": "进阶",
+    "timeCost": "每天1-2小时", "income": "2000-5000元/月",
     "problem": "抖音快手上的中小博主每天要更新，最头疼的就是想选题和写脚本。自己写又慢又容易枯竭。",
     "solution": "用 AI 分析爆款视频结构，批量生成脚本框架。你加点个人风格就能交付。",
     "result": "一条脚本50-200元，一个博主每月要20-30条。服务3-5个博主，月入5000+稳定。",
@@ -49,10 +46,8 @@ const CASES_DATA = [
   {
     "id": 4,
     "title": "AI 代做Excel数据分析，一单10-50元",
-    "category": "办公",
-    "difficulty": "入门",
-    "timeCost": "每单15-30分钟",
-    "income": "500-1500元/月",
+    "category": "办公", "difficulty": "入门",
+    "timeCost": "每单15-30分钟", "income": "500-1500元/月",
     "problem": "大量小商家、个体户、甚至公司文员不会用 Excel。要整理销售数据、做统计报表、生成图表，对他们来说很难。",
     "solution": "客户把原始数据发给你，你丢给 AI 处理，整理成表格和图表。你完全不需要懂 Excel 函数。",
     "result": "一单10-50元，15分钟搞定。回头率很高，很多人每月都要做报表。",
@@ -64,10 +59,8 @@ const CASES_DATA = [
   {
     "id": 5,
     "title": "AI PPT 代做，毕业季月入8000+",
-    "category": "办公",
-    "difficulty": "进阶",
-    "timeCost": "每单1-3小时",
-    "income": "3000-8000元/月",
+    "category": "办公", "difficulty": "进阶",
+    "timeCost": "每单1-3小时", "income": "3000-8000元/月",
     "problem": "大学生答辩、职场人年终汇报、创业者路演…都需要PPT。但大部分人做不好，也没时间做。",
     "solution": "用 AI 生成 PPT 内容和配图，再在 Gamma 或美册等工具中一键生成精美的 PPT。",
     "result": "简单PPT一页10元，复杂的一单500+。4-6月毕业季是旺季，一个月能做30-50单。",
@@ -79,10 +72,8 @@ const CASES_DATA = [
   {
     "id": 6,
     "title": "AI 翻译+人工润色，比纯翻译赚3倍",
-    "category": "翻译",
-    "difficulty": "入门",
-    "timeCost": "按字数计费",
-    "income": "1000-3000元/月",
+    "category": "翻译", "difficulty": "入门",
+    "timeCost": "按字数计费", "income": "1000-3000元/月",
     "problem": "很多人需要翻译文档，纯机器翻译不准确，纯人工翻译太贵太慢。AI翻译+人工润色正好解决这个痛点。",
     "solution": "用 AI 做翻译初稿，你逐段检查修正术语和文化表达。比纯人工快10倍，比纯机器准10倍。",
     "result": "中英互译50-100元/千字，专注某个领域（电商/法律）可以报价200元+/千字。",
@@ -94,10 +85,19 @@ const CASES_DATA = [
 ];
 
 export default function useCases() {
-  const [cases] = useState(CASES_DATA);
+  const [cases, setCases] = useState(EMBEDDED_CASES);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [sort, setSort] = useState('newest');
   const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    getCases().then(data => {
+      if (data?.cases?.length) setCases(data.cases);
+    }).catch(() => {
+      // 后端不可用，使用嵌入式数据
+    }).finally(() => setLoading(false));
+  }, []);
 
   const filtered = useMemo(() => {
     let result = [...cases];
@@ -111,7 +111,7 @@ export default function useCases() {
       result = result.filter(c =>
         c.title.toLowerCase().includes(q) ||
         c.summary.toLowerCase().includes(q) ||
-        c.tools.some(t => t.toLowerCase().includes(q))
+        c.tools?.some(t => t.toLowerCase().includes(q))
       );
     }
 
@@ -124,7 +124,7 @@ export default function useCases() {
         return getMax(b.income) - getMax(a.income);
       });
     } else {
-      result.sort((a, b) => b.id - a.id);
+      result.sort((a, b) => (b.id || 0) - (a.id || 0));
     }
 
     return result;
@@ -135,5 +135,5 @@ export default function useCases() {
     return { caseCount: cases.length, categoryCount: cats.size };
   }, [cases]);
 
-  return { cases: filtered, allCases: cases, stats, filter, setFilter, sort, setSort, search, setSearch };
+  return { cases: filtered, allCases: cases, stats, loading, filter, setFilter, sort, setSort, search, setSearch };
 }
