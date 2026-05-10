@@ -9,8 +9,8 @@ export default function Cases() {
   return (
     <section className="cases-page">
       <div className="container">
-        <h2 className="section-title">赚钱案例库</h2>
-        <p className="section-desc">找到适合你的路子，动手试试</p>
+        <h2 className="section-title">全部赚钱路子</h2>
+        <p className="section-desc">按分类筛选，找到适合你的那个</p>
 
         <FilterBar filter={filter} setFilter={setFilter} />
         <SearchBar search={search} setSearch={setSearch} />
@@ -26,7 +26,7 @@ export default function Cases() {
 
         <div className="case-grid">
           {cases.length === 0 ? (
-            <p className="empty-state">暂无匹配的案例，试试其他关键词</p>
+            <p className="empty-state">没搜到相关案例 🙁 换个关键词试试，或者看看其他分类</p>
           ) : (
             cases.map(c => <CaseCard key={c.id} case={c} />)
           )}

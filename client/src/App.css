@@ -175,6 +175,47 @@
   margin-top: 4px;
 }
 
+/* ===== Problem Section ===== */
+.problem {
+  padding: 60px 0;
+  background: #fff;
+}
+
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.problem-item {
+  text-align: center;
+  padding: 24px 20px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.problem-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.problem-item p {
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.problem-outro {
+  text-align: center;
+  color: var(--green-dark);
+  font-weight: 600;
+  font-size: 1rem;
+  margin-top: 28px;
+}
+
 /* ===== Sections ===== */
 .section-title {
   text-align: center;
@@ -535,6 +576,39 @@
 
 .detail-tips p {
   margin-top: 6px;
+}
+
+/* ===== FAQ ===== */
+.faq {
+  padding: 60px 0;
+}
+
+.faq-list {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+}
+
+.faq-item h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.faq-item p {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  line-height: 1.7;
 }
 
 /* ===== About ===== */
