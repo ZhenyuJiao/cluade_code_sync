@@ -1,0 +1,2 @@
+- [首次用户引导](first_time_user_guidance.md) — 用户是新手，需要多提示、多提问、多建议
+- [优先使用最优skill](use_best_skill.md) — 接到任务先搜最优 skill，用它干活，不自作主张

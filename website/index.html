@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 赚钱案例库</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===== 导航 ===== -->
+<nav>
+    <div class="container nav-inner">
+        <div class="logo">💰 AI 赚钱案例库</div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#cases">案例库</a></li>
+            <li><a href="#about">关于</a></li>
+        </ul>
+        <button class="hamburger" id="hamburger" aria-label="菜单">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- ===== Hero ===== -->
+<section class="hero">
+    <div class="container">
+        <h1><span>AI 赚钱</span>，没你想的那么难</h1>
+        <p class="hero-sub">不会编程？不懂技术？完全没关系。<br>这里的每个案例，都是普通人跟着步骤做、真的赚到了钱。</p>
+        <a href="#cases" class="btn btn-primary">看看都有什么路子 ↓</a>
+    </div>
+</section>
+
+<!-- ===== 统计 ===== -->
+<section class="stats">
+    <div class="container stats-grid">
+        <div class="stat-item">
+            <span class="stat-num" id="caseCount">0</span>
+            <span class="stat-label">赚钱案例</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num" id="categoryCount">0</span>
+            <span class="stat-label">赚钱方式</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num">入门~高阶</span>
+            <span class="stat-label">难度覆盖</span>
+        </div>
+    </div>
+</section>
+
+<!-- ===== 案例库 ===== -->
+<section id="cases" class="cases">
+    <div class="container">
+        <h2 class="section-title">真实的路子，一步步教给你</h2>
+        <p class="section-desc">每个案例都写了完整的步骤：从用什么工具，到怎么找客户，到能赚多少钱。</p>
+
+        <!-- 筛选 -->
+        <div class="filters" id="filters">
+            <button class="filter-btn active" data-filter="all">全部</button>
+            <button class="filter-btn" data-filter="写作">📝 写作</button>
+            <button class="filter-btn" data-filter="设计">🎨 设计</button>
+            <button class="filter-btn" data-filter="视频">🎬 视频</button>
+            <button class="filter-btn" data-filter="办公">📊 办公</button>
+            <button class="filter-btn" data-filter="翻译">🌐 翻译</button>
+        </div>
+
+        <!-- 排序 -->
+        <div class="sort-bar">
+            <label>排序：</label>
+            <select id="sortSelect">
+                <option value="newest">最新发布</option>
+                <option value="easiest">难度最低</option>
+                <option value="highest-income">收入最高</option>
+            </select>
+        </div>
+
+        <!-- 案例网格 -->
+        <div class="case-grid" id="caseGrid">
+            <!-- JS 渲染 -->
+        </div>
+    </div>
+</section>
+
+<!-- ===== 案例详情弹窗 ===== -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+        <button class="modal-close" id="modalClose">✕</button>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
+<!-- ===== 关于 ===== -->
+<section id="about" class="about">
+    <div class="container">
+        <h2 class="section-title">为什么要做这个网站？</h2>
+        <p class="section-desc">AI 不是程序员的专利。我们相信每个普通人都能用它多赚一份收入。</p>
+        <div class="about-grid">
+            <div class="about-card">
+                <div class="about-icon">📖</div>
+                <h3>照着做就行</h3>
+                <p>不跟你讲大道理。每个案例从注册账号开始教，跟着步骤走就能上手。</p>
+            </div>
+            <div class="about-card">
+                <div class="about-icon">🔄</div>
+                <h3>持续更新</h3>
+                <p>AI 变化快，我们会定期加新案例、更新老案例，保持路子有效。</p>
+            </div>
+            <div class="about-card">
+                <div class="about-icon">💬</div>
+                <h3>你有路子？告诉我们</h3>
+                <p>如果你用 AI 赚到了钱，欢迎分享你的经验。一起帮更多人。</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer>
+    <div class="container">
+        <p>找到适合你的路子，动手试试</p>
+        <p class="footer-small">不保证暴富，但保证每一条路子都是真实的、可操作的。</p>
+    </div>
+</footer>
+
+<script>
+// ===== 加载案例数据 =====
+let cases = [];
+
+fetch('cases.json')
+    .then(res => res.json())
+    .then(data => {
+        cases = data.cases;
+        render();
+    })
+    .catch(err => {
+        document.getElementById('caseGrid').innerHTML = '<p style="text-align:center;color:#999;">案例数据加载中，请刷新页面...</p>';
+    });
+
+// ===== 状态 =====
+let currentFilter = 'all';
+let currentSort = 'newest';
+
+// ===== 渲染 =====
+function render() {
+    let filtered = [...cases];
+
+    // 筛选
+    if (currentFilter !== 'all') {
+        filtered = filtered.filter(c => c.category === currentFilter);
+    }
+
+    // 排序
+    const difficultyOrder = { '入门': 1, '进阶': 2, '高阶': 3 };
+    if (currentSort === 'easiest') {
+        filtered.sort((a, b) => difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]);
+    } else if (currentSort === 'highest-income') {
+        filtered.sort((a, b) => {
+            const getMax = (s) => parseInt(s.replace(/[^0-9]/g, '').slice(-4)) || 0;
+            return getMax(b.income) - getMax(a.income);
+        });
+    } else {
+        // newest by id
+        filtered.sort((a, b) => b.id - a.id);
+    }
+
+    // 更新统计
+    document.getElementById('caseCount').textContent = cases.length;
+    const cats = new Set(cases.map(c => c.category));
+    document.getElementById('categoryCount').textContent = cats.size;
+
+    // 生成 HTML
+    const grid = document.getElementById('caseGrid');
+    if (filtered.length === 0) {
+        grid.innerHTML = '<p style="text-align:center;color:#999;grid-column:1/-1;">暂无该分类的案例</p>';
+        return;
+    }
+    grid.innerHTML = filtered.map(c => `
+        <div class="case-card" data-id="${c.id}">
+            <div class="card-header">
+                <span class="tag tag-${c.difficulty}">${c.difficulty}</span>
+                <span class="card-category">${c.category}</span>
+            </div>
+            <h3 class="card-title">${c.title}</h3>
+            <p class="card-summary">${c.summary}</p>
+            <div class="card-meta">
+                <span>⏱ ${c.timeCost}</span>
+                <span>💰 ${c.income}</span>
+            </div>
+            <button class="btn-detail">查看详情 →</button>
+        </div>
+    `).join('');
+
+    // 绑定点击事件
+    document.querySelectorAll('.case-card').forEach(el => {
+        el.addEventListener('click', () => {
+            const id = parseInt(el.dataset.id);
+            const c = cases.find(x => x.id === id);
+            if (c) showModal(c);
+        });
+    });
+}
+
+// ===== 弹窗 =====
+function showModal(c) {
+    const content = document.getElementById('modalContent');
+    content.innerHTML = `
+        <div class="modal-header">
+            <span class="tag tag-${c.difficulty}">${c.difficulty}</span>
+            <span class="card-category">${c.category}</span>
+        </div>
+        <h2>${c.title}</h2>
+        <div class="modal-meta">
+            <span>⏱ 时间：${c.timeCost}</span>
+            <span>💰 收入：${c.income}</span>
+        </div>
+        <p class="modal-summary">${c.summary}</p>
+        ${c.problem ? `<div class="modal-problem"><strong>😫 痛点：</strong>${c.problem}</div>` : ''}
+        ${c.result ? `<div class="modal-result"><strong>✅ 能赚多少：</strong>${c.result}</div>` : ''}
+        <h3>📋 教学步骤</h3>
+        <ol class="modal-steps">
+            ${c.steps.map(s => `<li>${s}</li>`).join('')}
+        </ol>
+        <div class="modal-tools">
+            <strong>🔧 使用工具：</strong>
+            ${c.tools.map(t => `<span class="tool-tag">${t}</span>`).join('')}
+        </div>
+        ${c.tips ? `<div class="modal-tips">💡 <strong>小贴士：</strong>${c.tips}</div>` : ''}
+    `;
+    document.getElementById('modalOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// ===== 筛选 =====
+document.getElementById('filters').addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    render();
+});
+
+// ===== 排序 =====
+document.getElementById('sortSelect').addEventListener('change', e => {
+    currentSort = e.target.value;
+    render();
+});
+
+// ===== 弹窗关闭 =====
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// ===== 汉堡菜单 =====
+document.getElementById('hamburger').addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('show');
+});
+document.querySelectorAll('.nav-links a').forEach(a => {
+    a.addEventListener('click', () => {
+        document.getElementById('navLinks').classList.remove('show');
+    });
+});
+</script>
+</body>
+</html>
